@@ -59,7 +59,6 @@ and you can listen the change of the slideswitch like this
 
 
 <img src="https://github.com/Leaking/SlideSwitch/blob/master/Example/TestLibs/res/drawable-hdpi/slide_a.png" width="140" />
-
 <img src="https://github.com/Leaking/SlideSwitch/blob/master/Example/TestLibs/res/drawable-hdpi/slide_b.png" width="140" />
 
 
