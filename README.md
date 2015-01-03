@@ -41,7 +41,3 @@ you can init the state(open or close) in jave code in this way
 ## What does it look like 
 
 
-<figure>
-  <img src="{{ site.url }}/images/fragments.png" alt="search screenshot">
-  <figcaption>fragment的设计原理</figcaption>
-</figure>
