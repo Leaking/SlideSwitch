@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="slideswitch">
+        <attr name="baseColor" format="color" />
+        <attr name="stillColor" format="color"/>
+        <attr name="moveColor" format="color"/>
+        <attr name="slideWidth" format="dimension"/>
+    	<attr name="slideHeight" format="dimension"/>
+    	<attr name="isOpen" format="boolean"/>
+    </declare-styleable>
+
+</resources>

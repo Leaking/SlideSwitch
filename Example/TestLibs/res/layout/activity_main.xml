@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:slideswitch="http://schemas.android.com/apk/res/com.example.testlibs"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffffff"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.testlibs.MainActivity" >
+
+    <com.leaking.slideswitch.SlideSwitch
+        android:id="@+id/swit"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		slideswitch:isOpen="true"
+        slideswitch:baseColor="#ffff510e"
+        slideswitch:moveColor="#ffffff"
+        slideswitch:slideHeight="30dip"
+        slideswitch:slideWidth="80dip"
+        slideswitch:stillColor="#ffa3a3a3" >
+    </com.leaking.slideswitch.SlideSwitch>
+    
+    <TextView 
+        android:id="@+id/txt"
+        android:layout_below="@id/swit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        
+        />
+
+</RelativeLayout>
