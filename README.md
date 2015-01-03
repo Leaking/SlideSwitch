@@ -12,7 +12,7 @@ A button they you can slide to open or close something
 you can define a slideswitch in xml like the following example
 
 
-```java
+```xml
     <com.leaking.slideswitch.SlideSwitch
         android:id="@+id/swit"
 		android:layout_height="wrap_content"
@@ -24,7 +24,7 @@ you can define a slideswitch in xml like the following example
         slideswitch:slideWidth="80dip"
         slideswitch:stillColor="#ffa3a3a3" >
     </com.leaking.slideswitch.SlideSwitch>
-
+```
 
 
 
@@ -33,7 +33,7 @@ you can initial the state(open or close) in jave code in this way
 
 ```java
 	bulletSwitch.setState(true);
-
+```
 
 and you can listen the change of the slideswitch like this
 
@@ -52,7 +52,7 @@ and you can listen the change of the slideswitch like this
                 app.saveAutoUpdateProp(false);
             }
         });
-
+```
 
 
 ## What does it look like 
