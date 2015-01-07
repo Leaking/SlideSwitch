@@ -2,9 +2,9 @@ SlideSwitch
 ===========
 
 
-## About this SlideSwitch
+## About SlideSwitch
 
-A button they you can slide to open or close something
+A button that you can slide on or off 
 
 
 ## How to use it
@@ -28,14 +28,14 @@ you can define a slideswitch in xml like the following example
 
 
 
-you can initial the state(open or close) in jave code in this way
+you can initial the state(on or off) in jave code in this way
 
 
 ```java
 	bulletSwitch.setState(true);
 ```
 
-and you can listen the change of the slideswitch like this
+and you can listen to the change of the slideswitch like this
 
 ```java
     updateSwitch.setSlideListener(new SlideListener() {
