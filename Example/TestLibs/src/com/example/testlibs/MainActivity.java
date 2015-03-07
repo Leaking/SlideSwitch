@@ -18,9 +18,12 @@ public class MainActivity extends Activity implements SlideListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         SlideSwitch slide = (SlideSwitch) findViewById(R.id.swit);
+        SlideSwitch slide2 = (SlideSwitch) findViewById(R.id.swit2);
+
         //slide.setState(false);
         txt = (TextView) findViewById(R.id.txt);
         slide.setSlideListener(this);
+//        slide2.setSlideListener(this);
         slide.setState(false);
     }
 

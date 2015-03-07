@@ -21,6 +21,8 @@ import com.example.slideswitch.R;
 
 public class SlideSwitch extends View {
 
+	public static final int SHAPE_RECT = 1;
+	public static final int SHAPE_CIRCLE = 2;
 	private static final int RIM_SIZE = 6;
 
 	private static final int COLOR_THEME = Color.parseColor("#ff00ee00");
@@ -41,10 +43,10 @@ public class SlideSwitch extends View {
 	private int eventLastX;
 	private int diffX = 0;
 	private int alpha;
+	private int shape;
 
 	public interface SlideListener {
 		public void open();
-
 		public void close();
 	}
 
@@ -52,11 +54,14 @@ public class SlideSwitch extends View {
 
 	public SlideSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
+		listener = null;
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.slideswitch);
 		color_theme = a.getColor(R.styleable.slideswitch_themeColor,
 				COLOR_THEME);
 		isOpen = a.getBoolean(R.styleable.slideswitch_isOpen, false);
+		shape = a.getInt(R.styleable.slideswitch_shape, SHAPE_RECT);
+
 		paint = new Paint();
 
 	}
@@ -80,16 +85,23 @@ public class SlideSwitch extends View {
 		setMeasuredDimension(width, height);
 		backRect = new Rect(0, 0, width, height);
 
+		
+		min_left = RIM_SIZE;
+		
+		if(shape == SHAPE_RECT)
+			max_left = width / 2;
+		else
+			max_left = width - height - RIM_SIZE;
+		
 		if (isOpen) {
-			frontRect_left = width / 2;
+			frontRect_left = max_left;
 			alpha = 255;
 		} else {
 			frontRect_left = RIM_SIZE;
 			alpha = 0;
 		}
 		frontRect_left_begin = frontRect_left;
-		min_left = RIM_SIZE;
-		max_left = width / 2;
+
 
 	}
 
@@ -110,19 +122,34 @@ public class SlideSwitch extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+		if (shape == SHAPE_RECT) {
+			paint.setColor(Color.GRAY);
+			canvas.drawRect(backRect, paint);
+			paint.setColor(color_theme);
+			paint.setAlpha(alpha);
+			canvas.drawRect(backRect, paint);
 
-		paint.setColor(Color.GRAY);
-		canvas.drawRect(backRect, paint);
-		paint.setColor(color_theme);
-		paint.setAlpha(alpha);
-		canvas.drawRect(backRect, paint);
+			frontRect = new Rect(frontRect_left, RIM_SIZE, frontRect_left
+					+ getMeasuredWidth() / 2 - RIM_SIZE, getMeasuredHeight()
+					- RIM_SIZE);
+			paint.setColor(Color.WHITE);
+			canvas.drawRect(frontRect, paint);
+		} else {
+			// »­Ô²ÐÎ
+			int radius;
+			radius = backRect.height() / 2 - RIM_SIZE;
+			paint.setColor(Color.GRAY);
+			canvas.drawRoundRect(new RectF(backRect), radius, radius, paint);
+			paint.setColor(color_theme);
+			paint.setAlpha(alpha);
+			canvas.drawRoundRect(new RectF(backRect), radius, radius, paint);
 
-		frontRect = new Rect(frontRect_left, RIM_SIZE, frontRect_left
-				+ getMeasuredWidth() / 2 - RIM_SIZE, getMeasuredHeight() - 2
-				* RIM_SIZE);
-		paint.setColor(Color.WHITE);
-		canvas.drawRect(frontRect, paint);
-
+			frontRect = new Rect(frontRect_left, RIM_SIZE, frontRect_left
+					+ backRect.height() - 2 * RIM_SIZE, backRect.height() - 2
+					* RIM_SIZE);
+			paint.setColor(Color.WHITE);
+			canvas.drawRoundRect(new RectF(frontRect), radius, radius, paint);
+		}
 	}
 
 	@Override
@@ -175,20 +202,10 @@ public class SlideSwitch extends View {
 	}
 
 	public void moveToDest(final boolean toRight) {
-		// if (toRight) {
-		// listener.open();
-		// isOpen = true;
-		// } else {
-		// listener.close();
-		// isOpen = false;
-		//
-		// }
-
 		final Handler handler = new Handler() {
 
 			@Override
 			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub
 				if (msg.what == 1) {
 					listener.open();
 					isOpen = true;
@@ -214,6 +231,7 @@ public class SlideSwitch extends View {
 							e.printStackTrace();
 						}
 					}
+					if(listener != null)
 					handler.sendEmptyMessage(1);
 					frontRect_left_begin = max_left;
 				} else {
@@ -227,6 +245,7 @@ public class SlideSwitch extends View {
 							e.printStackTrace();
 						}
 					}
+					if(listener != null)
 					handler.sendEmptyMessage(0);
 					frontRect_left_begin = min_left;
 				}
@@ -239,4 +258,7 @@ public class SlideSwitch extends View {
 		this.isOpen = isOpen;
 	}
 
+	public void setShapeType(int shapeType) {
+		this.shape = shapeType;
+	}
 }

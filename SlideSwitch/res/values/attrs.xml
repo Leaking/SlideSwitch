@@ -3,7 +3,11 @@
 
     <declare-styleable name="slideswitch">
         <attr name="themeColor" format="color" />
-    	<attr name="isOpen" format="boolean"/>
+        <attr name="isOpen" format="boolean" />
+        <attr name="shape">
+            <enum name="rect" value="0" />
+            <enum name="circle" value="1" />
+        </attr>
     </declare-styleable>
 
 </resources>
