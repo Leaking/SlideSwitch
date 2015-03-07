@@ -6,17 +6,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.TranslateAnimation;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.example.slideswitch.R;
 
@@ -25,14 +24,11 @@ public class SlideSwitch extends View {
 	private static final int RIM_SIZE = 6;
 
 	private static final int COLOR_THEME = Color.parseColor("#ff00ee00");
-	
-	//属性
+
+	// 属性
 	private int color_theme;
 	private boolean isOpen = false;
-	
-	
-	
-	
+
 	private Paint paint;
 	private Rect backRect;
 	private Rect frontRect;
@@ -41,7 +37,6 @@ public class SlideSwitch extends View {
 	private int min_left;
 	private int frontRect_left_begin = RIM_SIZE;
 
-	
 	private int eventStartX;
 	private int eventLastX;
 	private int diffX = 0;
@@ -59,7 +54,8 @@ public class SlideSwitch extends View {
 		super(context, attrs, defStyleAttr);
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.slideswitch);
-		color_theme = a.getColor(R.styleable.slideswitch_themeColor, COLOR_THEME);
+		color_theme = a.getColor(R.styleable.slideswitch_themeColor,
+				COLOR_THEME);
 		isOpen = a.getBoolean(R.styleable.slideswitch_isOpen, false);
 		paint = new Paint();
 
@@ -73,33 +69,29 @@ public class SlideSwitch extends View {
 		this(context, null);
 	}
 
+	// 留下的回调接口如果有修改界面其他组件，则每次刷新还会调用这个方法，
+	// 一般情况的刷新只会调用onDraw，不会继续调用这个方法
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		// TODO Auto-generated method stub
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		System.out.println("onMeasure");
 		int width = measureDimension(80, widthMeasureSpec);
 		int height = measureDimension(30, heightMeasureSpec);
 		setMeasuredDimension(width, height);
 		backRect = new Rect(0, 0, width, height);
-		
-		
-		if(isOpen){
-			frontRect_left = width/2;
+
+		if (isOpen) {
+			frontRect_left = width / 2;
 			alpha = 255;
-		}else{
+		} else {
 			frontRect_left = RIM_SIZE;
 			alpha = 0;
 		}
-
 		frontRect_left_begin = frontRect_left;
 		min_left = RIM_SIZE;
 		max_left = width / 2;
-		
-
 
 	}
-
-
 
 	public int measureDimension(int defaultSize, int measureSpec) {
 		int result;
@@ -118,9 +110,9 @@ public class SlideSwitch extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
+
 		paint.setColor(Color.GRAY);
 		canvas.drawRect(backRect, paint);
-
 		paint.setColor(color_theme);
 		paint.setAlpha(alpha);
 		canvas.drawRect(backRect, paint);
@@ -130,6 +122,7 @@ public class SlideSwitch extends View {
 				* RIM_SIZE);
 		paint.setColor(Color.WHITE);
 		canvas.drawRect(frontRect, paint);
+
 	}
 
 	@Override
@@ -152,18 +145,13 @@ public class SlideSwitch extends View {
 			break;
 		case MotionEvent.ACTION_UP:
 			int wholeX = (int) (event.getRawX() - eventStartX);
-			
-			
 			frontRect_left_begin = frontRect_left;
 			boolean toRight;
 			toRight = (frontRect_left_begin > max_left / 2 ? true : false);
-			System.out.println("wholeXXXX = " + wholeX);
-			if(Math.abs(wholeX) < 3 || wholeX == 0){
+			if (Math.abs(wholeX) < 3) {
 				toRight = !toRight;
-				System.out.println("toRight =  " + toRight);
 			}
 			moveToDest(toRight);
-
 			break;
 		default:
 			break;
@@ -187,12 +175,36 @@ public class SlideSwitch extends View {
 	}
 
 	public void moveToDest(final boolean toRight) {
+		// if (toRight) {
+		// listener.open();
+		// isOpen = true;
+		// } else {
+		// listener.close();
+		// isOpen = false;
+		//
+		// }
+
+		final Handler handler = new Handler() {
+
+			@Override
+			public void handleMessage(Message msg) {
+				// TODO Auto-generated method stub
+				if (msg.what == 1) {
+					listener.open();
+					isOpen = true;
+				} else {
+					listener.close();
+					isOpen = false;
+				}
+			}
+
+		};
+
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("-----111");
-				if(toRight){
-					while(frontRect_left <= max_left){
+				if (toRight) {
+					while (frontRect_left <= max_left) {
 						alpha = (int) (255 * (float) frontRect_left / (float) max_left);
 						invalidateView();
 						frontRect_left += 3;
@@ -202,9 +214,10 @@ public class SlideSwitch extends View {
 							e.printStackTrace();
 						}
 					}
+					handler.sendEmptyMessage(1);
 					frontRect_left_begin = max_left;
-				}else{
-					while(frontRect_left >= min_left){
+				} else {
+					while (frontRect_left >= min_left) {
 						alpha = (int) (255 * (float) frontRect_left / (float) max_left);
 						invalidateView();
 						frontRect_left -= 3;
@@ -214,6 +227,7 @@ public class SlideSwitch extends View {
 							e.printStackTrace();
 						}
 					}
+					handler.sendEmptyMessage(0);
 					frontRect_left_begin = min_left;
 				}
 			}
@@ -221,26 +235,8 @@ public class SlideSwitch extends View {
 
 	}
 
-	private static class AnimationListenerAdapter implements AnimationListener {
-
-		@Override
-		public void onAnimationStart(Animation animation) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onAnimationEnd(Animation animation) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onAnimationRepeat(Animation animation) {
-			// TODO Auto-generated method stub
-
-		}
-
+	public void setState(boolean isOpen) {
+		this.isOpen = isOpen;
 	}
 
 }

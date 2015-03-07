@@ -21,6 +21,7 @@ public class MainActivity extends Activity implements SlideListener {
         //slide.setState(false);
         txt = (TextView) findViewById(R.id.txt);
         slide.setSlideListener(this);
+        slide.setState(false);
     }
 
 
@@ -30,8 +31,6 @@ public class MainActivity extends Activity implements SlideListener {
 		// TODO Auto-generated method stub
 		txt.setText(" is opend ");
 	}
-
-
 
 
 	@Override
