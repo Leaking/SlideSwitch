@@ -14,15 +14,11 @@ you can define a slideswitch in xml like the following example
 
 ```xml
     <com.leaking.slideswitch.SlideSwitch
-        android:id="@+id/swit"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
-		slideswitch:isOpen="true"
-        slideswitch:baseColor="#ffff510e"
-        slideswitch:moveColor="#ffffff"
-        slideswitch:slideHeight="30dip"
-        slideswitch:slideWidth="80dip"
-        slideswitch:stillColor="#ffa3a3a3" >
+        android:layout_width="100dip"
+        android:layout_height="120dip"
+        slideswitch:isOpen="false"
+        slideswitch:shape="circle"
+        slideswitch:themeColor="#f200aa96" >
     </com.leaking.slideswitch.SlideSwitch>
 ```
 
@@ -58,8 +54,8 @@ and you can listen to the change of the slideswitch like this
 ## What does it look like 
 
 
-<img src="https://github.com/Leaking/SlideSwitch/blob/master/Example/TestLibs/res/drawable-hdpi/slide_a.png" width="140" />
-<img src="https://github.com/Leaking/SlideSwitch/blob/master/Example/TestLibs/res/drawable-hdpi/slide_b.png" width="140" />
+<img src="https://github.com/Leaking/SlideSwitch/blob/master/Example/TestLibs/res/drawable-hdpi/slide_a.png" width="340" />
+<img src="https://github.com/Leaking/SlideSwitch/blob/master/Example/TestLibs/res/drawable-hdpi/slide_b.png" width="340" />
 
 
 ##Author
