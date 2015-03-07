@@ -2,11 +2,7 @@
 <resources>
 
     <declare-styleable name="slideswitch">
-        <attr name="baseColor" format="color" />
-        <attr name="stillColor" format="color"/>
-        <attr name="moveColor" format="color"/>
-        <attr name="slideWidth" format="dimension"/>
-    	<attr name="slideHeight" format="dimension"/>
+        <attr name="themeColor" format="color" />
     	<attr name="isOpen" format="boolean"/>
     </declare-styleable>
 

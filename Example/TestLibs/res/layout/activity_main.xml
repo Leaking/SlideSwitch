@@ -12,14 +12,11 @@
 
     <com.leaking.slideswitch.SlideSwitch
         android:id="@+id/swit"
-		android:layout_height="wrap_content"
-		android:layout_width="wrap_content"
+		android:layout_height="80dip"
+		android:layout_width="200dip"
+		slideswitch:themeColor="#ff00aa00"
 		slideswitch:isOpen="true"
-        slideswitch:baseColor="#ffff510e"
-        slideswitch:moveColor="#ffffff"
-        slideswitch:slideHeight="30dip"
-        slideswitch:slideWidth="80dip"
-        slideswitch:stillColor="#ffa3a3a3" >
+		>
     </com.leaking.slideswitch.SlideSwitch>
     
     <TextView 
