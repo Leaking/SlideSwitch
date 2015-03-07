@@ -14,8 +14,6 @@ import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 
 import com.example.slideswitch.R;
 
@@ -24,46 +22,42 @@ public class SlideSwitch extends View {
 	public static final int SHAPE_RECT = 1;
 	public static final int SHAPE_CIRCLE = 2;
 	private static final int RIM_SIZE = 6;
-
 	private static final int COLOR_THEME = Color.parseColor("#ff00ee00");
-
-	// 属性
+	// 3 attributes
 	private int color_theme;
-	private boolean isOpen = false;
-
+	private boolean isOpen;
+	private int shape;
+	// varials of drawing
 	private Paint paint;
 	private Rect backRect;
 	private Rect frontRect;
-	private int frontRect_left;
+	private int alpha;
 	private int max_left;
 	private int min_left;
+	private int frontRect_left;
 	private int frontRect_left_begin = RIM_SIZE;
-
 	private int eventStartX;
 	private int eventLastX;
 	private int diffX = 0;
-	private int alpha;
-	private int shape;
+	
+	private SlideListener listener;
 
 	public interface SlideListener {
 		public void open();
 		public void close();
 	}
 
-	private SlideListener listener;
-
 	public SlideSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 		listener = null;
+		paint = new Paint();
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.slideswitch);
 		color_theme = a.getColor(R.styleable.slideswitch_themeColor,
 				COLOR_THEME);
 		isOpen = a.getBoolean(R.styleable.slideswitch_isOpen, false);
 		shape = a.getInt(R.styleable.slideswitch_shape, SHAPE_RECT);
-
-		paint = new Paint();
-
+		a.recycle();
 	}
 
 	public SlideSwitch(Context context, AttributeSet attrs) {
@@ -74,25 +68,29 @@ public class SlideSwitch extends View {
 		this(context, null);
 	}
 
-	// 留下的回调接口如果有修改界面其他组件，则每次刷新还会调用这个方法，
-	// 一般情况的刷新只会调用onDraw，不会继续调用这个方法
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		System.out.println("onMeasure");
-		int width = measureDimension(80, widthMeasureSpec);
-		int height = measureDimension(30, heightMeasureSpec);
+		int width = measureDimension(280, widthMeasureSpec);
+		int height = measureDimension(140, heightMeasureSpec);	
+		if (shape == SHAPE_CIRCLE) {
+			if (width < height)
+				width = height * 2;
+		}
 		setMeasuredDimension(width, height);
+		initDrawingVal();
+	}
+	
+	public void initDrawingVal(){
+		int width = getMeasuredWidth();
+		int height = getMeasuredHeight();
+		
 		backRect = new Rect(0, 0, width, height);
-
-		
 		min_left = RIM_SIZE;
-		
-		if(shape == SHAPE_RECT)
+		if (shape == SHAPE_RECT)
 			max_left = width / 2;
 		else
-			max_left = width - height - RIM_SIZE;
-		
+			max_left = width - (height - 2 * RIM_SIZE) - RIM_SIZE;
 		if (isOpen) {
 			frontRect_left = max_left;
 			alpha = 255;
@@ -101,8 +99,6 @@ public class SlideSwitch extends View {
 			alpha = 0;
 		}
 		frontRect_left_begin = frontRect_left;
-
-
 	}
 
 	public int measureDimension(int defaultSize, int measureSpec) {
@@ -145,8 +141,8 @@ public class SlideSwitch extends View {
 			canvas.drawRoundRect(new RectF(backRect), radius, radius, paint);
 
 			frontRect = new Rect(frontRect_left, RIM_SIZE, frontRect_left
-					+ backRect.height() - 2 * RIM_SIZE, backRect.height() - 2
-					* RIM_SIZE);
+					+ backRect.height() - 2 * RIM_SIZE, backRect.height()
+					- RIM_SIZE);
 			paint.setColor(Color.WHITE);
 			canvas.drawRoundRect(new RectF(frontRect), radius, radius, paint);
 		}
@@ -164,7 +160,9 @@ public class SlideSwitch extends View {
 			eventLastX = (int) event.getRawX();
 			diffX = eventLastX - eventStartX;
 			int tempX = diffX + frontRect_left_begin;
-			if (tempX > min_left && tempX < max_left) {
+			tempX = (tempX > max_left ? max_left : tempX);
+			tempX = (tempX < min_left ? min_left : tempX);
+			if (tempX >= min_left && tempX <= max_left) {
 				frontRect_left = tempX;
 				alpha = (int) (255 * (float) tempX / (float) max_left);
 				invalidateView();
@@ -187,7 +185,7 @@ public class SlideSwitch extends View {
 	}
 
 	/**
-	 * 重绘
+	 * draw again
 	 */
 	private void invalidateView() {
 		if (Looper.getMainLooper() == Looper.myLooper()) {
@@ -208,10 +206,8 @@ public class SlideSwitch extends View {
 			public void handleMessage(Message msg) {
 				if (msg.what == 1) {
 					listener.open();
-					isOpen = true;
 				} else {
 					listener.close();
-					isOpen = false;
 				}
 			}
 
@@ -231,9 +227,13 @@ public class SlideSwitch extends View {
 							e.printStackTrace();
 						}
 					}
-					if(listener != null)
-					handler.sendEmptyMessage(1);
+					alpha = 255;
+					frontRect_left = max_left;
+					isOpen = true;
+					if (listener != null)
+						handler.sendEmptyMessage(1);
 					frontRect_left_begin = max_left;
+
 				} else {
 					while (frontRect_left >= min_left) {
 						alpha = (int) (255 * (float) frontRect_left / (float) max_left);
@@ -245,9 +245,13 @@ public class SlideSwitch extends View {
 							e.printStackTrace();
 						}
 					}
-					if(listener != null)
-					handler.sendEmptyMessage(0);
+					alpha = 0;
+					frontRect_left = min_left;
+					isOpen = false;
+					if (listener != null)
+						handler.sendEmptyMessage(0);
 					frontRect_left_begin = min_left;
+
 				}
 			}
 		}).start();
@@ -255,7 +259,15 @@ public class SlideSwitch extends View {
 	}
 
 	public void setState(boolean isOpen) {
-		this.isOpen = isOpen;
+		this.isOpen = isOpen;		
+		initDrawingVal();
+		invalidateView();
+		if(listener != null)
+			if(isOpen == true){
+				listener.open();
+			}else{
+				listener.close();
+			}
 	}
 
 	public void setShapeType(int shapeType) {

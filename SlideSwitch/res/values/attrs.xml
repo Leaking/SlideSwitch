@@ -5,8 +5,8 @@
         <attr name="themeColor" format="color" />
         <attr name="isOpen" format="boolean" />
         <attr name="shape">
-            <enum name="rect" value="0" />
-            <enum name="circle" value="1" />
+            <enum name="rect" value="1" />
+            <enum name="circle" value="2" />
         </attr>
     </declare-styleable>
 

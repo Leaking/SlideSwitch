@@ -9,25 +9,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-
 public class MainActivity extends Activity implements SlideListener {
 
 	TextView txt;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        SlideSwitch slide = (SlideSwitch) findViewById(R.id.swit);
-        SlideSwitch slide2 = (SlideSwitch) findViewById(R.id.swit2);
+	SlideSwitch slide;
+	SlideSwitch slide2;
 
-        //slide.setState(false);
-        txt = (TextView) findViewById(R.id.txt);
-        slide.setSlideListener(this);
-//        slide2.setSlideListener(this);
-        slide.setState(false);
-    }
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		slide = (SlideSwitch) findViewById(R.id.swit);
+		slide2 = (SlideSwitch) findViewById(R.id.swit2);
 
-
+		slide.setState(false);
+		txt = (TextView) findViewById(R.id.txt);
+		slide.setSlideListener(this);
+	}
 
 	@Override
 	public void open() {
@@ -35,11 +33,9 @@ public class MainActivity extends Activity implements SlideListener {
 		txt.setText(" is opend ");
 	}
 
-
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
 		txt.setText(" is close ");
-
 	}
 }
