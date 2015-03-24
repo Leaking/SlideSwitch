@@ -51,6 +51,7 @@ public class SlideSwitch extends View {
 		super(context, attrs, defStyleAttr);
 		listener = null;
 		paint = new Paint();
+		paint.setAntiAlias(true);
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.slideswitch);
 		color_theme = a.getColor(R.styleable.slideswitch_themeColor,
