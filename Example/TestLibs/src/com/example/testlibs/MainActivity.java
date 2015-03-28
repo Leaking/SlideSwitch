@@ -30,12 +30,15 @@ public class MainActivity extends Activity implements SlideListener {
 	@Override
 	public void open() {
 		// TODO Auto-generated method stub
-		txt.setText(" is opend ");
+		txt.setText("first switch is opend, and set the second one is 'slideable'");
+		slide2.setSlideable(true);
 	}
 
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-		txt.setText(" is close ");
+		txt.setText("first switch is closed,and set the second one is 'unslideable'");
+		slide2.setSlideable(false);
+
 	}
 }

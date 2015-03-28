@@ -40,6 +40,9 @@ public class SlideSwitch extends View {
 	private int eventLastX;
 	private int diffX = 0;
 	
+	private boolean slideable = true;
+	
+	
 	private SlideListener listener;
 
 	public interface SlideListener {
@@ -151,8 +154,9 @@ public class SlideSwitch extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		if(slideable == false)
+			return super.onTouchEvent(event);
 		int action = MotionEventCompat.getActionMasked(event);
-
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			eventStartX = (int) event.getRawX();
@@ -274,4 +278,9 @@ public class SlideSwitch extends View {
 	public void setShapeType(int shapeType) {
 		this.shape = shapeType;
 	}
+	
+	public void setSlideable(boolean slideable){
+		this.slideable = slideable;
+	}
+	
 }
