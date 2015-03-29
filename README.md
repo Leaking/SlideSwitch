@@ -31,6 +31,7 @@ you can initial the state(on or off) in jave code in this way
 	bulletSwitch.setState(true);
 ```
 
+
 and you can listen to the change of the slideswitch like this
 
 ```java
@@ -38,18 +39,22 @@ and you can listen to the change of the slideswitch like this
 
             @Override
             public void open() {
-                // TODO Auto-generated method stub
-                app.saveAutoUpdateProp(true);
+                // Do something ,,,
             }
 
             @Override
             public void close() {
-                // TODO Auto-generated method stub
-                app.saveAutoUpdateProp(false);
+                // Do something ,,,
             }
         });
 ```
 
+you even can forbid the widget to change its state(open or close) like this
+
+```java
+    slide.setSlideable(false);
+    slide.setSlideable(true);
+```
 
 ## What does it look like 
 
