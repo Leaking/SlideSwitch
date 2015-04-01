@@ -34,6 +34,7 @@
     </com.leaking.slideswitch.SlideSwitch>
 
     <com.leaking.slideswitch.SlideSwitch
+        android:id="@+id/swit3"
         android:layout_width="20dip"
         android:layout_height="50dip"
         android:layout_marginTop="10dip"
@@ -43,6 +44,7 @@
     </com.leaking.slideswitch.SlideSwitch>
 
     <com.leaking.slideswitch.SlideSwitch
+        android:id="@+id/swit4"
         android:layout_width="100dip"
         android:layout_height="120dip"
         android:layout_marginTop="10dip"
@@ -52,6 +54,7 @@
     </com.leaking.slideswitch.SlideSwitch>
 
     <com.leaking.slideswitch.SlideSwitch
+        android:id="@+id/swit5"
         android:layout_width="250dip"
         android:layout_height="100dip"
         android:layout_marginTop="10dip"

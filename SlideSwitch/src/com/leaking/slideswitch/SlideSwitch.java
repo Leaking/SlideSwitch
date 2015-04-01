@@ -7,9 +7,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Parcelable;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -38,11 +40,8 @@ public class SlideSwitch extends View {
 	private int frontRect_left_begin = RIM_SIZE;
 	private int eventStartX;
 	private int eventLastX;
-	private int diffX = 0;
-	
-	private boolean slideable = true;
-	
-	
+	private int diffX = 0;	
+	private boolean slideable = true;	
 	private SlideListener listener;
 
 	public interface SlideListener {
@@ -143,7 +142,6 @@ public class SlideSwitch extends View {
 			paint.setColor(color_theme);
 			paint.setAlpha(alpha);
 			canvas.drawRoundRect(new RectF(backRect), radius, radius, paint);
-
 			frontRect = new Rect(frontRect_left, RIM_SIZE, frontRect_left
 					+ backRect.height() - 2 * RIM_SIZE, backRect.height()
 					- RIM_SIZE);
@@ -282,5 +280,22 @@ public class SlideSwitch extends View {
 	public void setSlideable(boolean slideable){
 		this.slideable = slideable;
 	}
+
+	@Override
+	protected void onRestoreInstanceState(Parcelable state) {
+	    if (state instanceof Bundle) {
+	        Bundle bundle = (Bundle) state;
+	        this.isOpen = bundle.getBoolean("isOpen");
+	        state = bundle.getParcelable("instanceState");
+	      }
+	      super.onRestoreInstanceState(state);
+	}
 	
+	@Override
+	protected Parcelable onSaveInstanceState() {
+	    Bundle bundle = new Bundle();
+	    bundle.putParcelable("instanceState", super.onSaveInstanceState());
+	    bundle.putBoolean("isOpen", this.isOpen);
+	    return bundle;
+	}
 }

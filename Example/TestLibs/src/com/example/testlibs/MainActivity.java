@@ -20,12 +20,11 @@ public class MainActivity extends Activity implements SlideListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		slide = (SlideSwitch) findViewById(R.id.swit);
-		slide.setSlideListener(this);
-		
 		slide2 = (SlideSwitch) findViewById(R.id.swit2);
 
 		slide.setState(false);
 		txt = (TextView) findViewById(R.id.txt);
+		slide.setSlideListener(this);
 	}
 
 	@Override
@@ -40,6 +39,5 @@ public class MainActivity extends Activity implements SlideListener {
 		// TODO Auto-generated method stub
 		txt.setText("first switch is closed,and set the second one is 'unslideable'");
 		slide2.setSlideable(false);
-
 	}
 }
