@@ -40,12 +40,13 @@ public class SlideSwitch extends View {
 	private int frontRect_left_begin = RIM_SIZE;
 	private int eventStartX;
 	private int eventLastX;
-	private int diffX = 0;	
-	private boolean slideable = true;	
+	private int diffX = 0;
+	private boolean slideable = true;
 	private SlideListener listener;
 
 	public interface SlideListener {
 		public void open();
+
 		public void close();
 	}
 
@@ -75,7 +76,7 @@ public class SlideSwitch extends View {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		int width = measureDimension(280, widthMeasureSpec);
-		int height = measureDimension(140, heightMeasureSpec);	
+		int height = measureDimension(140, heightMeasureSpec);
 		if (shape == SHAPE_CIRCLE) {
 			if (width < height)
 				width = height * 2;
@@ -83,11 +84,11 @@ public class SlideSwitch extends View {
 		setMeasuredDimension(width, height);
 		initDrawingVal();
 	}
-	
-	public void initDrawingVal(){
+
+	public void initDrawingVal() {
 		int width = getMeasuredWidth();
 		int height = getMeasuredHeight();
-		
+
 		backRect = new Rect(0, 0, width, height);
 		min_left = RIM_SIZE;
 		if (shape == SHAPE_RECT)
@@ -152,7 +153,7 @@ public class SlideSwitch extends View {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		if(slideable == false)
+		if (slideable == false)
 			return super.onTouchEvent(event);
 		int action = MotionEventCompat.getActionMasked(event);
 		switch (action) {
@@ -262,13 +263,13 @@ public class SlideSwitch extends View {
 	}
 
 	public void setState(boolean isOpen) {
-		this.isOpen = isOpen;		
+		this.isOpen = isOpen;
 		initDrawingVal();
 		invalidateView();
-		if(listener != null)
-			if(isOpen == true){
+		if (listener != null)
+			if (isOpen == true) {
 				listener.open();
-			}else{
+			} else {
 				listener.close();
 			}
 	}
@@ -276,26 +277,26 @@ public class SlideSwitch extends View {
 	public void setShapeType(int shapeType) {
 		this.shape = shapeType;
 	}
-	
-	public void setSlideable(boolean slideable){
+
+	public void setSlideable(boolean slideable) {
 		this.slideable = slideable;
 	}
 
 	@Override
 	protected void onRestoreInstanceState(Parcelable state) {
-	    if (state instanceof Bundle) {
-	        Bundle bundle = (Bundle) state;
-	        this.isOpen = bundle.getBoolean("isOpen");
-	        state = bundle.getParcelable("instanceState");
-	      }
-	      super.onRestoreInstanceState(state);
+		if (state instanceof Bundle) {
+			Bundle bundle = (Bundle) state;
+			this.isOpen = bundle.getBoolean("isOpen");
+			state = bundle.getParcelable("instanceState");
+		}
+		super.onRestoreInstanceState(state);
 	}
-	
+
 	@Override
 	protected Parcelable onSaveInstanceState() {
-	    Bundle bundle = new Bundle();
-	    bundle.putParcelable("instanceState", super.onSaveInstanceState());
-	    bundle.putBoolean("isOpen", this.isOpen);
-	    return bundle;
+		Bundle bundle = new Bundle();
+		bundle.putParcelable("instanceState", super.onSaveInstanceState());
+		bundle.putBoolean("isOpen", this.isOpen);
+		return bundle;
 	}
 }
