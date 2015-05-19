@@ -1,5 +1,24 @@
+/*
+ * Copyright (C) 2015 Quinn Chen
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.leaking.slideswitch;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -8,14 +27,13 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.os.Parcelable;
 import android.support.v4.view.MotionEventCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.example.slideswitch.R;
 
@@ -24,7 +42,7 @@ public class SlideSwitch extends View {
 	public static final int SHAPE_RECT = 1;
 	public static final int SHAPE_CIRCLE = 2;
 	private static final int RIM_SIZE = 6;
-	private static final int COLOR_THEME = Color.parseColor("#ff00ee00");
+	private static final int DEFAULT_COLOR_THEME = Color.parseColor("#ff00ee00");
 	// 3 attributes
 	private int color_theme;
 	private boolean isOpen;
@@ -33,6 +51,8 @@ public class SlideSwitch extends View {
 	private Paint paint;
 	private Rect backRect;
 	private Rect frontRect;
+	private RectF frontCircleRect;
+	private RectF backCircleRect;
 	private int alpha;
 	private int max_left;
 	private int min_left;
@@ -58,7 +78,7 @@ public class SlideSwitch extends View {
 		TypedArray a = context.obtainStyledAttributes(attrs,
 				R.styleable.slideswitch);
 		color_theme = a.getColor(R.styleable.slideswitch_themeColor,
-				COLOR_THEME);
+				DEFAULT_COLOR_THEME);
 		isOpen = a.getBoolean(R.styleable.slideswitch_isOpen, false);
 		shape = a.getInt(R.styleable.slideswitch_shape, SHAPE_RECT);
 		a.recycle();
@@ -89,6 +109,9 @@ public class SlideSwitch extends View {
 		int width = getMeasuredWidth();
 		int height = getMeasuredHeight();
 
+		backCircleRect = new RectF();
+		frontCircleRect = new RectF();
+		frontRect = new Rect();
 		backRect = new Rect(0, 0, width, height);
 		min_left = RIM_SIZE;
 		if (shape == SHAPE_RECT)
@@ -128,29 +151,30 @@ public class SlideSwitch extends View {
 			paint.setColor(color_theme);
 			paint.setAlpha(alpha);
 			canvas.drawRect(backRect, paint);
-
-			frontRect = new Rect(frontRect_left, RIM_SIZE, frontRect_left
+			frontRect.set(frontRect_left, RIM_SIZE, frontRect_left
 					+ getMeasuredWidth() / 2 - RIM_SIZE, getMeasuredHeight()
 					- RIM_SIZE);
 			paint.setColor(Color.WHITE);
 			canvas.drawRect(frontRect, paint);
 		} else {
-			// »­Ô²ÐÎ
+			// draw circle
 			int radius;
 			radius = backRect.height() / 2 - RIM_SIZE;
 			paint.setColor(Color.GRAY);
-			canvas.drawRoundRect(new RectF(backRect), radius, radius, paint);
+			backCircleRect.set(backRect);
+			canvas.drawRoundRect(backCircleRect, radius, radius, paint);
 			paint.setColor(color_theme);
 			paint.setAlpha(alpha);
-			canvas.drawRoundRect(new RectF(backRect), radius, radius, paint);
-			frontRect = new Rect(frontRect_left, RIM_SIZE, frontRect_left
+			canvas.drawRoundRect(backCircleRect, radius, radius, paint);
+			frontRect.set(frontRect_left, RIM_SIZE, frontRect_left
 					+ backRect.height() - 2 * RIM_SIZE, backRect.height()
 					- RIM_SIZE);
+			frontCircleRect.set(frontRect);
 			paint.setColor(Color.WHITE);
-			canvas.drawRoundRect(new RectF(frontRect), radius, radius, paint);
+			canvas.drawRoundRect(frontCircleRect, radius, radius, paint);
 		}
 	}
-
+	
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (slideable == false)
@@ -204,62 +228,36 @@ public class SlideSwitch extends View {
 	}
 
 	public void moveToDest(final boolean toRight) {
-		final Handler handler = new Handler() {
+		ValueAnimator toDestAnim = ValueAnimator.ofInt(frontRect_left,
+				toRight ? max_left : min_left);
+		toDestAnim.setDuration(500);
+		toDestAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+		toDestAnim.start();
+		toDestAnim.addUpdateListener(new AnimatorUpdateListener() {
 
 			@Override
-			public void handleMessage(Message msg) {
-				if (msg.what == 1) {
-					listener.open();
-				} else {
-					listener.close();
-				}
+			public void onAnimationUpdate(ValueAnimator animation) {
+				frontRect_left = (Integer) animation.getAnimatedValue();
+				alpha = (int) (255 * (float) frontRect_left / (float) max_left);
+				invalidateView();
 			}
-
-		};
-
-		new Thread(new Runnable() {
+		});
+		toDestAnim.addListener(new AnimatorListenerAdapter() {
 			@Override
-			public void run() {
+			public void onAnimationEnd(Animator animation) {
 				if (toRight) {
-					while (frontRect_left <= max_left) {
-						alpha = (int) (255 * (float) frontRect_left / (float) max_left);
-						invalidateView();
-						frontRect_left += 3;
-						try {
-							Thread.sleep(3);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					alpha = 255;
-					frontRect_left = max_left;
 					isOpen = true;
 					if (listener != null)
-						handler.sendEmptyMessage(1);
+						listener.open();
 					frontRect_left_begin = max_left;
-
 				} else {
-					while (frontRect_left >= min_left) {
-						alpha = (int) (255 * (float) frontRect_left / (float) max_left);
-						invalidateView();
-						frontRect_left -= 3;
-						try {
-							Thread.sleep(3);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-					alpha = 0;
-					frontRect_left = min_left;
 					isOpen = false;
 					if (listener != null)
-						handler.sendEmptyMessage(0);
+						listener.close();
 					frontRect_left_begin = min_left;
-
 				}
 			}
-		}).start();
-
+		});
 	}
 
 	public void setState(boolean isOpen) {
