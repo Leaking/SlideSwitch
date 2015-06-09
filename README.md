@@ -7,6 +7,21 @@ SlideSwitch
 A button that you can slide on or off 
 
 
+## How to import into your project
+
+### Android Studio
+
+use gradle.
+
+dependencies {
+    compile 'com.leaking.slideswitch:app:1.0.0'
+}
+
+### Eclipse
+
+import it as a library project.
+
+
 ## How to use it
 
 you can define a slideswitch in xml like the following example
