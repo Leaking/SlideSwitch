@@ -13,9 +13,18 @@ A button that you can slide on or off
 
 use gradle.
 
+Gradle dependency:
+
+```groovy
+
 dependencies {
     compile 'com.leaking.slideswitch:app:1.0.0'
 }
+
+```
+
+
+
 
 ### Eclipse
 
