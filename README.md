@@ -15,12 +15,23 @@ use gradle.
 
 Gradle dependency:
 
-```groovy
+Add the below codes in the module gradle file, which module use this widget.
 
-dependencies {
-    compile 'com.leaking.slideswitch:app:1.0.0'
+```gradle
+compile 'com.leaking.slideswitch:slideswitch:1.0.0'
+```
+
+Add the below codes in you project gradle file 
+
+```gradle
+allprojects {
+    repositories {
+        jcenter()
+        maven {
+            url 'https://dl.bintray.com/leaking/maven'
+        }
+    }
 }
-
 ```
 
 
