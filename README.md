@@ -39,12 +39,12 @@ allprojects {
 
 ### Eclipse
 
-import it as a library project.
+Import it as a library project.
 
 
 ## How to use it
 
-you can define a slideswitch in xml like the following example
+You can define a slideswitch in a layout xml using the following example
 
 
 ```xml
@@ -53,13 +53,13 @@ you can define a slideswitch in xml like the following example
         android:layout_height="120dip"
         slideswitch:isOpen="false"
         slideswitch:shape="circle"
-        slideswitch:themeColor="#f200aa96" >
-    </com.leaking.slideswitch.SlideSwitch>
+        slideswitch:offsetPercent="0.65"
+        slideswitch:themeColor="#f200aa96"/>
 ```
 
 
 
-you can initial the state(on or off) in jave code in this way
+You can initial the state (on or off) in Java code using the following method
 
 
 ```java
