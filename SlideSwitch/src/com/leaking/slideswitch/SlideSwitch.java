@@ -174,7 +174,7 @@ public class SlideSwitch extends View {
 			canvas.drawRoundRect(frontCircleRect, radius, radius, paint);
 		}
 	}
-	
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (slideable == false)
@@ -196,21 +196,26 @@ public class SlideSwitch extends View {
 				invalidateView();
 			}
 			break;
-		case MotionEvent.ACTION_UP:
-			int wholeX = (int) (event.getRawX() - eventStartX);
-			frontRect_left_begin = frontRect_left;
-			boolean toRight;
-			toRight = (frontRect_left_begin > max_left / 2 ? true : false);
-			if (Math.abs(wholeX) < 3) {
-				toRight = !toRight;
-			}
-			moveToDest(toRight);
-			break;
+    case MotionEvent.ACTION_UP:
+    case MotionEvent.ACTION_CANCEL:
+        stopToggle(event);
+        break;
 		default:
 			break;
 		}
 		return true;
 	}
+
+  private void stopToggle(MotionEvent event) {
+    int wholeX = (int) (event.getRawX() - eventStartX);
+    frontRect_left_begin = frontRect_left;
+    boolean toRight;
+    toRight = (frontRect_left_begin > max_left / 2);
+    if (Math.abs(wholeX) < 3) {
+        toRight = !toRight;
+    }
+    moveToDest(toRight);
+}
 
 	/**
 	 * draw again
